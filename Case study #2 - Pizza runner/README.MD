@@ -9,7 +9,7 @@ Steps taken:
 - Use `lower()` to update all characters to consistent lower case 
 
 ### Code
-WITH customer_orders AS (SELECT 
+```WITH customer_orders AS (SELECT 
 	order_id,
 	customer_id, 
     pizza_id,
@@ -19,4 +19,4 @@ WITH customer_orders AS (SELECT
 FROM
 pizza_runner.customer_orders)
 
-SELECT * FROM customer_orders
+SELECT * FROM customer_orders```
