@@ -9,14 +9,17 @@ Steps taken:
 - Use `lower()` to update all characters to consistent lower case 
 
 ### Code
-```WITH customer_orders AS (SELECT 
+```
+WITH customer_orders AS (SELECT 
 	order_id,
 	customer_id, 
-    pizza_id,
+    	pizza_id,
 	CASE WHEN exclusions = 'null' THEN '' ELSE 	   exclusions END AS exclusions,
-    CASE WHEN lower(TRIM(extras)) = 'null' OR extras IS NULL THEN '' ELSE TRIM(extras) END AS extras,
-    order_time
-FROM
-pizza_runner.customer_orders)
+    	CASE WHEN lower(TRIM(extras)) = 'null' OR extras IS NULL THEN '' ELSE TRIM(extras) END AS extras,
+    	order_time
+	FROM
+	pizza_runner.customer_orders)
 
-SELECT * FROM customer_orders```
+SELECT * FROM customer_orders
+
+```
