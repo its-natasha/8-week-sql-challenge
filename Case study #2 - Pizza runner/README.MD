@@ -1,14 +1,14 @@
 # Case study #2 Pizza Runner
 # A.Pizza Metrics
 
-### Cleaning up the tables:
+#### Cleaning up the tables:
 
 Steps taken: 
 - Replace IS NULL or NULL values as an empty string 
 - Use `strip()` to remove white space
 - Use `lower()` to update all characters to consistent lower case 
 
-### Code
+#### Code
 ```
 WITH customer_orders AS (SELECT 
 	order_id,
@@ -23,3 +23,17 @@ WITH customer_orders AS (SELECT
 SELECT * FROM customer_orders
 
 ```
+
+# Solutions
+How many pizzas were ordered?
+14
+
+#### Code:
+```
+SELECT COUNT(pizza_id)
+FROM customer_orders
+```
+
+#### Steps taken:
+- Use `count` to count the total number of rows with values in the pizza_id column
+
