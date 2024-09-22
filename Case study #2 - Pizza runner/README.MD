@@ -79,6 +79,17 @@ FROM customer_orders
 
 ### How many successful orders were delivered by each runner?
 
+#### Code:
+```
+SELECT 
+    ro.runner_id, 
+    COUNT(pickup_time) as successful_deliveries
+FROM customer_orders co
+LEFT JOIN runner_orders ro
+ON co.order_id = ro.order_id
+WHERE cancellation <> 'cancellation'
+GROUP BY runner_id
+```
 
 #### How many of each type of pizza was delivered?
 #### How many Vegetarian and Meatlovers were ordered by each customer?
@@ -87,3 +98,36 @@ FROM customer_orders
 #### How many pizzas were delivered that had both exclusions and extras?
 #### What was the total volume of pizzas ordered for each hour of the day?
 #### What was the volume of orders for each day of the week?
+
+```
+
+
+WITH customer_orders AS (SELECT 
+	order_id,
+	customer_id, 
+    pizza_id,
+	CASE WHEN exclusions = 'null' THEN '' ELSE 	   exclusions END AS exclusions,
+    CASE WHEN lower(TRIM(extras)) = 'null' OR extras IS NULL THEN '' ELSE TRIM(extras) END AS extras,
+    order_time
+FROM
+pizza_runner.customer_orders),
+
+runner_orders AS (
+SELECT 
+	order_id,
+    runner_id,
+    CASE WHEN pickup_time IS NULL or lower(pickup_time) = 'null' THEN '' ELSE pickup_time END AS pickup_time,
+    REPLACE(REPLACE(LOWER(distance), 'km', ''), 'null', '') AS distance,
+    CASE 
+    	WHEN duration LIKE '%km' THEN TRIM(duration, 'km') 
+        WHEN duration LIKE '%mins' THEN TRIM(duration, 'mins')
+        WHEN duration LIKE '%minute' THEN TRIM(duration, 'minute')
+        WHEN duration LIKE '%minutes' THEN TRIM(duration, 'minutes')
+        WHEN duration IS NULL or duration = 'null' THEN '' 
+        ELSE duration END AS duration,
+    CASE
+    	WHEN trim(lower(cancellation)) LIKE '%cancel%' THEN 'cancellation'
+        WHEN cancellation IS NULL or cancellation = 'null' THEN ''
+        ELSE cancellation END AS cancellation
+FROM pizza_runner.runner_orders)
+```
