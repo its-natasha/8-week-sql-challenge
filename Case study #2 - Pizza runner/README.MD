@@ -3,11 +3,12 @@
 Table of contents
 1. Part A.Pizza Metrics
 2. Part B.Pizza Metrics
-3. Part c.Pizza Metrics
+3. Part C.Pizza Metrics
 
 ### 1. Part A.Pizza Metrics
 
-#### Cleaning the tables: Query: 
+#### Cleaned tables: 
+
 ```
 WITH customer_orders AS (SELECT 
  	order_id,
