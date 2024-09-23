@@ -55,7 +55,7 @@ FROM pizza_runner.runner_orders
 ```
 
 # Solutions
-#### 1. How many pizzas were ordered?
+##### **1. How many pizzas were ordered?**
 In this section we will COUNT `pizza_id`.
 
 14
@@ -70,21 +70,20 @@ FROM customer_orders
 - Use COUNT to calculate the total number of rows that have values in the `pizza_id` column
 
 
-### 2. How many unique customer orders were made?
+##### **2. How many unique customer orders were made?**
 - 5
 
-#### 2.1 Code solution:
+##### 2.1 Code solution:
 ```
 SELECT COUNT (DISTINCT CUSTOMER_ID)
 FROM customer_orders
 ```
 
-#### 2.2 Steps taken:
+##### 2.2 Steps taken:
 - Use `DISTINCT` to extract unique values
 - Use `COUNT` to count number of values in a row
 
-
-### 3. How many successful orders were delivered by each runner?
+##### **3. How many successful orders were delivered by each runner?**
 We need to count all of the deliveries made by each runner, and exclude the count of cancellations. In the following section, if a runner has "picked up" a delivery and there was no cancellation, this will be considered a successful delivery.
 
 #### 3.1 Code solution:
