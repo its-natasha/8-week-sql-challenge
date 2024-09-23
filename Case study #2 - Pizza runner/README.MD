@@ -67,7 +67,7 @@ FROM customer_orders
 ```
 
 #### 1.3 Steps:
-- Use COUNT to calculate the total number of rows that have values in the `pizza_id` column
+- Use the `COUNT` function to determine the total number of rows with values in the `pizza_id` column.
 ---
 
 #### 2. How many unique customer orders were made?
@@ -79,9 +79,10 @@ SELECT COUNT (DISTINCT CUSTOMER_ID)
 FROM customer_orders
 ```
 
-#### 2.2 Steps taken:
-- Use `DISTINCT` to extract unique values
-- Use `COUNT` to count number of values in a row
+#### 2.2 Steps Taken:
+- Use `DISTINCT` to extract unique values.
+- Use `COUNT` to count the number of values in each row.
+
 ---
 
 #### 3. How many successful orders were delivered by each runner?
