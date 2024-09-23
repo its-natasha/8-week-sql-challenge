@@ -68,7 +68,7 @@ FROM customer_orders
 
 #### 1.3 Steps taken:
 - Use COUNT to calculate the total number of rows that have values in the `pizza_id` column
-
+---
 
 ##### **2. How many unique customer orders were made?**
 - 5
