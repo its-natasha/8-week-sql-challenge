@@ -120,6 +120,8 @@ GROUP BY pn.pizza_id, pn.pizza_name
 
 #### 5. How many Vegetarian and Meatlovers were ordered by each customer?
 
+#### 5.1 Code solution:
+
 ```
 SELECT
 co.customer_id, 
@@ -136,6 +138,7 @@ ORDER BY customer_id
 #### 6. What was the maximum number of pizzas delivered in a single order?
 Count number of pizza's deliverd by order_id and filter out cancellations
 
+#### 6.1 Code solution:
 ```
 SELECT 
 co.order_id, 
@@ -150,7 +153,26 @@ LIMIT 1
 ```
 
 
-#### For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+#### 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+
+#### 7.2 steps
+- COUNT number of blanks `''` for exclusions and extras to determine how many pizza did not have any changes
+- COUNT number of non-blanks for exclusions and extras to detminer how many pizzas did have a change
+- Use GROUP BY to arrange customer_ids into groups
+
+#### 7.1 Code solution:
+```
+SELECT
+    co.customer_id,
+    COUNT(CASE WHEN co.exclusions = '' AND co.extras = '' THEN 1 END) AS original_pizza,
+    COUNT (CASE WHEN co.exclusions <> '' OR co.extras <> '' THEN 1 END) AS pizza_changes
+FROM customer_orders co
+LEFT JOIN runner_orders ro
+ON co.order_id = ro.order_id
+WHERE ro.cancellation NOT LIKE '%cancel'
+GROUP BY co.customer_id
+```
+
 #### How many pizzas were delivered that had both exclusions and extras?
 #### What was the total volume of pizzas ordered for each hour of the day?
 #### What was the volume of orders for each day of the week?
