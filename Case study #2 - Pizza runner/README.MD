@@ -5,11 +5,11 @@ Table of contents
 2. Part B.Pizza Metrics
 3. Part c.Pizza Metrics
 
-# 1. Part A.Pizza Metrics
+### 1. Part A.Pizza Metrics
 
 #### I. Cleaning up customer_order table:
 
-##### Query
+#### Query
 ```
 WITH customer_orders AS (SELECT 
 	order_id,
@@ -23,7 +23,7 @@ WITH customer_orders AS (SELECT
 
 SELECT * FROM customer_orders
 
-##### Steps taken: 
+#### Steps taken: 
 - Replace IS NULL or NULL values as an empty string 
 - Use `strip()` to remove white space
 - Use `lower()` to update all characters to consistent lower case 
@@ -32,7 +32,7 @@ SELECT * FROM customer_orders
 
 #### II.Cleaning up runner_orders table:
 
-##### Query
+#### Query
 
 ```
 SELECT 
@@ -66,7 +66,7 @@ SELECT COUNT(pizza_id)
 FROM customer_orders
 ```
 
-#### 1.3 Steps:
+#### 1.3 Query steps:
 - Use the `COUNT` function to determine the total number of rows with values in the `pizza_id` column.
 ---
 
@@ -79,7 +79,7 @@ SELECT COUNT (DISTINCT CUSTOMER_ID)
 FROM customer_orders
 ```
 
-#### 2.2 Steps Taken:
+#### 2.2 Query steps:
 - Use `DISTINCT` to extract unique values.
 - Use `COUNT` to count the number of values in each row.
 ---
@@ -98,7 +98,7 @@ WHERE cancellation <> 'cancellation'
 GROUP BY runner_id
 ```
 
-#### 3.2 Steps:
+#### 3.2 Query steps:
 - Join the `customer_orders` table with the `runner_orders` table.
 - Use `WHERE` on the `cancellation` column to filter out any rows containing 'cancellation'.
 - Use `GROUP BY` to aggregate the data by runner.
@@ -119,7 +119,7 @@ ON co.pizza_id = pn.pizza_id
 WHERE cancellation <> 'cancellation'
 GROUP BY pn.pizza_id, pn.pizza_name
 ```
-#### 4.2 Steps:
+#### 4.2 Query steps:
 - Perform a left join between `pizza_orders` and `pizza_name` using `order_id`.
 - Count the number of vegetarian pizza orders and the number of meat lover pizza orders, grouping the results by `customer_id`.
 ---
@@ -139,7 +139,7 @@ GROUP BY customer_id
 ORDER BY customer_id
 ```
 
-#### 5.2 Steps:
+#### 5.2 Query steps:
 - Use `COUNT` and `CASE WHEN` to flag a `1` when a customer orders a vegetarian pizza.
 - Use `COUNT` and `CASE WHEN` to flag a `1` when a customer orders a meat lover pizza.
 - Use `GROUP BY` to organise the results based on `customer_id` and the type of pizza ordered.
@@ -161,8 +161,15 @@ GROUP by co.order_id
 ORDER BY order_count DESC
 LIMIT 1
 ```
-#### 6.2 Steps:
 
+#### 6.2 Steps:
+- Instead of using the `MAX()` function, opted for `ORDER BY` with `LIMIT`.
+- Count the total number of pizza orders.
+- Use `WHERE` to filter out cancellations.
+- Arrange the results in descending order with `ORDER BY`.
+- Use `LIMIT` to display only the top result.
+
+---
 
 #### 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 
