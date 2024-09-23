@@ -7,38 +7,23 @@ Table of contents
 
 ### 1. Part A.Pizza Metrics
 
-#### I. Cleaning up customer_order table:
-
-#### Query
+#### Cleaning the tables: Query: 
 ```
 WITH customer_orders AS (SELECT 
-	order_id,
+ 	order_id,
 	customer_id, 
-    	pizza_id,
+        pizza_id,
 	CASE WHEN exclusions = 'null' THEN '' ELSE 	   exclusions END AS exclusions,
-    	CASE WHEN lower(TRIM(extras)) = 'null' OR extras IS NULL THEN '' ELSE TRIM(extras) END AS extras,
-    	order_time
-	FROM
-	pizza_runner.customer_orders)
+        CASE WHEN lower(TRIM(extras)) = 'null' OR extras IS NULL THEN '' ELSE TRIM(extras) END AS extras,
+        order_time
+FROM
+pizza_runner.customer_orders),
 
-SELECT * FROM customer_orders
-
-#### Steps taken: 
-- Replace IS NULL or NULL values as an empty string 
-- Use `strip()` to remove white space
-- Use `lower()` to update all characters to consistent lower case 
-
-```
-
-#### II.Cleaning up runner_orders table:
-
-#### Query
-
-```
+runner_orders AS (
 SELECT 
     order_id,
     runner_id,
-    CASE WHEN pickup_time IS NULL or lower(pickup_time) = 'null' THEN '' ELSE pickup_time END AS pickup_time,
+    CASE WHEN pickup_time IS NULL or lower(pickup_time) = 'null' THEN '' ELSE pickup_time END AS      pickup_time,
     REPLACE(REPLACE(LOWER(distance), 'km', ''), 'null', '') AS distance,
     CASE 
     	WHEN duration LIKE '%km' THEN TRIM(duration, 'km') 
@@ -51,7 +36,11 @@ SELECT
     	WHEN trim(lower(cancellation)) LIKE '%cancel%' THEN 'cancellation'
         WHEN cancellation IS NULL or cancellation = 'null' THEN ''
         ELSE cancellation END AS cancellation
-FROM pizza_runner.runner_orders
+FROM pizza_runner.runner_orders),
+
+pizza_names AS (
+  SELECT * 
+  FROM pizza_runner.pizza_names)
 ```
 
 # Solutions
@@ -102,6 +91,7 @@ GROUP BY runner_id
 - Join the `customer_orders` table with the `runner_orders` table.
 - Use `WHERE` on the `cancellation` column to filter out any rows containing 'cancellation'.
 - Use `GROUP BY` to aggregate the data by runner.
+---
 
 #### 4. How many of each type of pizza was delivered?
 
@@ -173,12 +163,7 @@ LIMIT 1
 
 #### 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 
-#### 7.2 steps
-- COUNT number of blanks `''` for exclusions and extras to determine how many pizza did not have any changes
-- COUNT number of non-blanks for exclusions and extras to detminer how many pizzas did have a change
-- Use GROUP BY to arrange customer_ids into groups
-
-#### 7.1 Code solution:
+#### 7.1 Query:
 ```
 SELECT
     co.customer_id,
@@ -191,9 +176,15 @@ WHERE ro.cancellation NOT LIKE '%cancel'
 GROUP BY co.customer_id
 ```
 
+#### 7.2 Query steps:
+- Count the number of blank entries (`''`) for `exclusions` and `extras` to determine how many pizzas had no changes.
+- Count the number of non-blank entries for `exclusions` and `extras` to identify how many pizzas had changes.
+- Use `GROUP BY` to organize the results by `customer_id`.
+---
+
 #### 8. How many pizzas were delivered that had both exclusions and extras?
 
-8.1 Code solution:
+#### 8.1 Query:
 ```
 SELECT
     COUNT(CASE WHEN co.exclusions <> '' AND co.extras <> '' THEN 1 END) AS original_pizza
@@ -203,16 +194,20 @@ ON co.order_id = ro.order_id
 WHERE ro.cancellation NOT LIKE '%cancel'
 ```
 
-#### 9. What was the total volume of pizzas ordered for each hour of the day?
-COUNT number of pizza's ordered per hour per day. After conducting research, 
+#### 8.2 Query steps:
+- Count the number of cells with values in `exclusions` and `extras`.
+- Use `WHERE` to filter out cancellations.
+---
 
-##### 9.1 Code solution:
+#### 9. What was the total volume of pizzas ordered for each hour of the day?
+
+##### 9.1 Query:
 
 ```
 SELECT
-hour,
-order_time,
-order_date,
+ hour,
+ order_time,
+ order_date,
 COUNT(order_id) AS volume
 FROM (
 SELECT *,
@@ -223,54 +218,26 @@ GROUP BY hour, order_date, order_time
 ORDER BY order_date
 ```
 
+##### 9.2 Query steps:
+- Use `EXTRACT` to retrieve the hours from `order_time`.
+- Use `CAST` to obtain the date from `order_time`.
+- Use `GROUP BY` to calculate the count based on hour, order date, and `order_time`.
+---
 
 #### 10. What was the volume of orders for each day of the week?
 
-##### 10.1 Code solution
+#### 10.1 Query:
 ```
 SELECT
-CAST(order_time AS DATE) AS order_date,
-TO_CHAR(order_time, 'day') as order_day,
-COUNT(order_id) AS volume
+  CAST(order_time AS DATE) AS order_date,
+  TO_CHAR(order_time, 'day') as order_day,
+  COUNT(order_id) AS volume
 FROM customer_orders
 GROUP BY order_date, order_day
 ORDER BY order_date
 ```
 
+#### 10.2 Query steps:
+- Use `CAST` to extract date from order_date
 
-```
-
-WITH customer_orders AS (SELECT 
-	order_id,
-	customer_id, 
-    pizza_id,
-	CASE WHEN exclusions = 'null' THEN '' ELSE 	   exclusions END AS exclusions,
-    CASE WHEN lower(TRIM(extras)) = 'null' OR extras IS NULL THEN '' ELSE TRIM(extras) END AS extras,
-    order_time
-FROM
-pizza_runner.customer_orders),
-
-runner_orders AS (
-SELECT 
-	order_id,
-    runner_id,
-    CASE WHEN pickup_time IS NULL or lower(pickup_time) = 'null' THEN '' ELSE pickup_time END AS pickup_time,
-    REPLACE(REPLACE(LOWER(distance), 'km', ''), 'null', '') AS distance,
-    CASE 
-    	WHEN duration LIKE '%km' THEN TRIM(duration, 'km') 
-        WHEN duration LIKE '%mins' THEN TRIM(duration, 'mins')
-        WHEN duration LIKE '%minute' THEN TRIM(duration, 'minute')
-        WHEN duration LIKE '%minutes' THEN TRIM(duration, 'minutes')
-        WHEN duration IS NULL or duration = 'null' THEN '' 
-        ELSE duration END AS duration,
-    CASE
-    	WHEN trim(lower(cancellation)) LIKE '%cancel%' THEN 'cancellation'
-        WHEN cancellation IS NULL or cancellation = 'null' THEN ''
-        ELSE cancellation END AS cancellation
-FROM pizza_runner.runner_orders),
-
-pizza_names AS (
-  SELECT * 
-  FROM pizza_runner.pizza_names)
-
-```
+---
