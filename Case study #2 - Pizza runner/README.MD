@@ -214,6 +214,18 @@ ORDER BY order_date
 
 #### 10. What was the volume of orders for each day of the week?
 
+##### 10.1 Code solution
+```
+SELECT
+CAST(order_time AS DATE) AS order_date,
+TO_CHAR(order_time, 'day') as order_day,
+COUNT(order_id) AS volume
+FROM customer_orders
+GROUP BY order_date, order_day
+ORDER BY order_date
+```
+
+
 ```
 
 WITH customer_orders AS (SELECT 
