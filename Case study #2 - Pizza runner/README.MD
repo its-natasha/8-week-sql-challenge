@@ -66,13 +66,13 @@ FROM customer_orders
 ### 2. How many unique customer orders were made?
 - 5
 
-#### Code:
+#### 2.1 Code solution:
 ```
 SELECT COUNT (DISTINCT CUSTOMER_ID)
 FROM customer_orders
 ```
 
-#### Steps taken:
+#### 2.2 Steps taken:
 - Use `DISTINCT` to extract unique values
 - Use `COUNT` to count number of values in a row
 
@@ -80,12 +80,7 @@ FROM customer_orders
 ### 3. How many successful orders were delivered by each runner?
 We need to count all of the deliveries made by each runner, and exclude the count of cancellations. In the following section, if a runner has "picked up" a delivery and there was no cancellation, this will be considered a successful delivery.
 
-#### Steps:
-- Join the `customer_orders` table to `runner_orders` table
-- Use `WHERE` on `cancellation` column to filter out any row that says 'cancellation'
-- Use `GROUP BY` to agregate the data by runners
-
-#### Code:
+#### 3.1 Code solution:
 ```
 SELECT 
     ro.runner_id, 
@@ -97,9 +92,14 @@ WHERE cancellation <> 'cancellation'
 GROUP BY runner_id
 ```
 
+#### 3.2 Steps:
+- Join the `customer_orders` table to `runner_orders` table
+- Use `WHERE` on `cancellation` column to filter out any row that says 'cancellation'
+- Use `GROUP BY` to agregate the data by runners
+
 #### 4. How many of each type of pizza was delivered?
 
-#### Code:
+#### 4.1 Code solution:
 ```
 SELECT 
     pn.pizza_id,
@@ -113,6 +113,9 @@ ON co.pizza_id = pn.pizza_id
 WHERE cancellation <> 'cancellation'
 GROUP BY pn.pizza_id, pn.pizza_name
 ```
+#### 4.2 Steps:
+- Left join `pizza_orders` and `pizza_name` by `order_id`
+- COUNT number of vegetarian pizza orders and COUNT number of meatlover pizza orders and GROUP BY customer_id
 
 
 #### 5. How many Vegetarian and Meatlovers were ordered by each customer?
@@ -130,7 +133,23 @@ ORDER BY customer_id
 ```
 
 
-#### What was the maximum number of pizzas delivered in a single order?
+#### 6. What was the maximum number of pizzas delivered in a single order?
+Count number of pizza's deliverd by order_id and filter out cancellations
+
+```
+SELECT 
+co.order_id, 
+COUNT (co.order_id) as order_count
+FROM customer_orders co
+LEFT JOIN runner_orders as ro
+ON co.order_id = ro.order_id
+WHERE cancellation NOT LIKE '%cancel'
+GROUP by co.order_id
+ORDER BY order_count DESC
+LIMIT 1
+```
+
+
 #### For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 #### How many pizzas were delivered that had both exclusions and extras?
 #### What was the total volume of pizzas ordered for each hour of the day?
