@@ -1,5 +1,11 @@
 # Case study #2 Pizza Runner
-# A.Pizza Metrics
+
+There are 3parts to this case study, click on the following links to skip to Part A, B or C:
+- Part A.Pizza Metrics
+- Part B.Pizza Metrics
+- Part c.Pizza Metrics
+
+# Part A.Pizza Metrics
 
 #### Cleaning up customer_order table:
 
@@ -173,9 +179,40 @@ WHERE ro.cancellation NOT LIKE '%cancel'
 GROUP BY co.customer_id
 ```
 
-#### How many pizzas were delivered that had both exclusions and extras?
-#### What was the total volume of pizzas ordered for each hour of the day?
-#### What was the volume of orders for each day of the week?
+#### 8. How many pizzas were delivered that had both exclusions and extras?
+
+8.1 Code solution:
+```
+SELECT
+    COUNT(CASE WHEN co.exclusions <> '' AND co.extras <> '' THEN 1 END) AS original_pizza
+FROM customer_orders co
+LEFT JOIN runner_orders ro
+ON co.order_id = ro.order_id
+WHERE ro.cancellation NOT LIKE '%cancel'
+```
+
+#### 9. What was the total volume of pizzas ordered for each hour of the day?
+COUNT number of pizza's ordered per hour per day. After conducting research, 
+
+##### 9.1 Code solution:
+
+```
+SELECT
+hour,
+order_time,
+order_date,
+COUNT(order_id) AS volume
+FROM (
+SELECT *,
+EXTRACT (HOUR from order_time) as hour,
+CAST(order_time AS DATE) as order_date
+FROM customer_orders) AS subquery
+GROUP BY hour, order_date, order_time
+ORDER BY order_date
+```
+
+
+#### 10. What was the volume of orders for each day of the week?
 
 ```
 
