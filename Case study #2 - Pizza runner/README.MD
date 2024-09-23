@@ -1,13 +1,13 @@
 # Case study #2 Pizza Runner
 
-There are 3parts to this case study, click on the following links to skip to Part A, B or C:
+There are 3parts to this case study, click on the following links to navigate to Part A, B or C:
 - Part A.Pizza Metrics
 - Part B.Pizza Metrics
 - Part c.Pizza Metrics
 
 # Part A.Pizza Metrics
 
-#### Cleaning up customer_order table:
+#### I. Cleaning up customer_order table:
 
 ##### Code
 ```
@@ -30,7 +30,7 @@ SELECT * FROM customer_orders
 
 ```
 
-#### Cleaning up runner_orders table:
+#### II.Cleaning up runner_orders table:
 
 ##### Code
 
@@ -55,18 +55,19 @@ FROM pizza_runner.runner_orders
 ```
 
 # Solutions
-### 1. How many pizzas were ordered?
-- 14
+#### 1. How many pizzas were ordered?
+In this section we will COUNT `pizza_id`.
 
-#### Code:
+14
+
+##### 1.2 Code solution:
 ```
 SELECT COUNT(pizza_id)
 FROM customer_orders
 ```
 
-#### Steps taken:
-- Use `count` to count the total number of rows with values in the pizza_id column
-
+#### 1.3 Steps taken:
+- Use COUNT to calculate the total number of rows that have values in the `pizza_id` column
 
 
 ### 2. How many unique customer orders were made?
