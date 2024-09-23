@@ -3,7 +3,7 @@
 
 #### Cleaning up customer_order table:
 
-#### Code
+##### Code
 ```
 WITH customer_orders AS (SELECT 
 	order_id,
@@ -17,7 +17,7 @@ WITH customer_orders AS (SELECT
 
 SELECT * FROM customer_orders
 
-### Steps taken: 
+##### Steps taken: 
 - Replace IS NULL or NULL values as an empty string 
 - Use `strip()` to remove white space
 - Use `lower()` to update all characters to consistent lower case 
@@ -26,7 +26,7 @@ SELECT * FROM customer_orders
 
 #### Cleaning up runner_orders table:
 
-### Code
+##### Code
 
 ```
 SELECT 
@@ -77,7 +77,13 @@ FROM customer_orders
 - Use `COUNT` to count number of values in a row
 
 
-### How many successful orders were delivered by each runner?
+### 3. How many successful orders were delivered by each runner?
+We need to count all of the deliveries made by each runner, and exclude the count of cancellations. In the following section, if a runner has "picked up" a delivery and there was no cancellation, this will be considered a successful delivery.
+
+#### Steps:
+- Join the `customer_orders` table to `runner_orders` table
+- Use `WHERE` on `cancellation` column to filter out any row that says 'cancellation'
+- Use `GROUP BY` to agregate the data by runners
 
 #### Code:
 ```
@@ -91,8 +97,39 @@ WHERE cancellation <> 'cancellation'
 GROUP BY runner_id
 ```
 
-#### How many of each type of pizza was delivered?
-#### How many Vegetarian and Meatlovers were ordered by each customer?
+#### 4. How many of each type of pizza was delivered?
+
+#### Code:
+```
+SELECT 
+    pn.pizza_id,
+    pn.pizza_name,
+    COUNT(ro.pickup_time) AS delivered_pizza
+FROM runner_orders ro
+LEFT JOIN customer_orders co
+ON ro.order_id = co.order_id
+LEFT JOIN pizza_names pn
+ON co.pizza_id = pn.pizza_id
+WHERE cancellation <> 'cancellation'
+GROUP BY pn.pizza_id, pn.pizza_name
+```
+
+
+#### 5. How many Vegetarian and Meatlovers were ordered by each customer?
+
+```
+SELECT
+co.customer_id, 
+COUNT(CASE WHEN pn.pizza_name = 'Vegetarian' THEN 1 END) AS vegetarian,
+COUNT(CASE WHEN pn.pizza_name = 'Meatlovers' THEN 1 END) AS meatlovers
+FROM customer_orders co
+LEFT JOIN pizza_names pn
+ON co.pizza_id = pn.pizza_id
+GROUP BY customer_id
+ORDER BY customer_id
+```
+
+
 #### What was the maximum number of pizzas delivered in a single order?
 #### For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 #### How many pizzas were delivered that had both exclusions and extras?
@@ -100,7 +137,6 @@ GROUP BY runner_id
 #### What was the volume of orders for each day of the week?
 
 ```
-
 
 WITH customer_orders AS (SELECT 
 	order_id,
@@ -129,5 +165,10 @@ SELECT
     	WHEN trim(lower(cancellation)) LIKE '%cancel%' THEN 'cancellation'
         WHEN cancellation IS NULL or cancellation = 'null' THEN ''
         ELSE cancellation END AS cancellation
-FROM pizza_runner.runner_orders)
+FROM pizza_runner.runner_orders),
+
+pizza_names AS (
+  SELECT * 
+  FROM pizza_runner.pizza_names)
+
 ```
