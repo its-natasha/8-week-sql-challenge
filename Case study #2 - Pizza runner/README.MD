@@ -82,13 +82,11 @@ FROM customer_orders
 #### 2.2 Steps Taken:
 - Use `DISTINCT` to extract unique values.
 - Use `COUNT` to count the number of values in each row.
-
 ---
 
 #### 3. How many successful orders were delivered by each runner?
-We need to count all of the deliveries made by each runner, and exclude the count of cancellations. In the following section, if a runner has "picked up" a delivery and there was no cancellation, this will be considered a successful delivery.
 
-#### Query #3
+#### 3.1 Query 
 ```
 SELECT 
     ro.runner_id, 
@@ -100,14 +98,14 @@ WHERE cancellation <> 'cancellation'
 GROUP BY runner_id
 ```
 
-#### Steps:
-- Join the `customer_orders` table to `runner_orders` table
-- Use `WHERE` on `cancellation` column to filter out any row that says 'cancellation'
-- Use `GROUP BY` to agregate the data by runners
+#### 3.2 Steps:
+- Join the `customer_orders` table with the `runner_orders` table.
+- Use `WHERE` on the `cancellation` column to filter out any rows containing 'cancellation'.
+- Use `GROUP BY` to aggregate the data by runner.
 
 #### 4. How many of each type of pizza was delivered?
 
-#### 4.1 Code solution:
+#### 4.1 Query:
 ```
 SELECT 
     pn.pizza_id,
@@ -122,19 +120,18 @@ WHERE cancellation <> 'cancellation'
 GROUP BY pn.pizza_id, pn.pizza_name
 ```
 #### 4.2 Steps:
-- Left join `pizza_orders` and `pizza_name` by `order_id`
-- COUNT number of vegetarian pizza orders and COUNT number of meatlover pizza orders and GROUP BY customer_id
-
+- Perform a left join between `pizza_orders` and `pizza_name` using `order_id`.
+- Count the number of vegetarian pizza orders and the number of meat lover pizza orders, grouping the results by `customer_id`.
+---
 
 #### 5. How many Vegetarian and Meatlovers were ordered by each customer?
 
-#### 5.1 Code solution:
-
+#### 5.1 Query:
 ```
 SELECT
-co.customer_id, 
-COUNT(CASE WHEN pn.pizza_name = 'Vegetarian' THEN 1 END) AS vegetarian,
-COUNT(CASE WHEN pn.pizza_name = 'Meatlovers' THEN 1 END) AS meatlovers
+  co.customer_id, 
+  COUNT(CASE WHEN pn.pizza_name = 'Vegetarian' THEN 1 END) AS vegetarian,
+  COUNT(CASE WHEN pn.pizza_name = 'Meatlovers' THEN 1 END) AS meatlovers
 FROM customer_orders co
 LEFT JOIN pizza_names pn
 ON co.pizza_id = pn.pizza_id
@@ -142,15 +139,20 @@ GROUP BY customer_id
 ORDER BY customer_id
 ```
 
+#### 5.2 Steps:
+- Use `COUNT` and `CASE WHEN` to flag a `1` when a customer orders a vegetarian pizza.
+- Use `COUNT` and `CASE WHEN` to flag a `1` when a customer orders a meat lover pizza.
+- Use `GROUP BY` to organise the results based on `customer_id` and the type of pizza ordered.
+---
+
 
 #### 6. What was the maximum number of pizzas delivered in a single order?
-Count number of pizza's deliverd by order_id and filter out cancellations
 
-#### 6.1 Code solution:
+#### 6.1 Query:
 ```
 SELECT 
-co.order_id, 
-COUNT (co.order_id) as order_count
+  co.order_id, 
+  COUNT (co.order_id) as order_count
 FROM customer_orders co
 LEFT JOIN runner_orders as ro
 ON co.order_id = ro.order_id
@@ -159,6 +161,7 @@ GROUP by co.order_id
 ORDER BY order_count DESC
 LIMIT 1
 ```
+#### 6.2 Steps:
 
 
 #### 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
