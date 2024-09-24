@@ -242,3 +242,17 @@ ORDER BY order_date
 - Use `CAST` to extract date from order_date
 
 ---
+
+## B. Runner and Customer Experience
+
+#### 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+
+#### 1.2 Query steps:
+- Use DATE_TRUNC() to round the registration_date to the nearest week starting on Monday. You can also use DATE_TRUNC() to round to the nearest year, month, or time, noting that it always rounds down to the beginning of the specified period.
+
+What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
+Is there any relationship between the number of pizzas and how long the order takes to prepare?
+What was the average distance travelled for each customer?
+What was the difference between the longest and shortest delivery times for all orders?
+What was the average speed for each runner for each delivery and do you notice any trend for these values?
+What is the successful delivery percentage for each runner?
