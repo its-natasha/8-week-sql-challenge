@@ -246,9 +246,18 @@ ORDER BY order_date
 ## B. Runner and Customer Experience
 
 #### 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+```
+SELECT 
+ DATE_TRUNC('week', registration_date) + INTERVAL '4 days' as registered_week,
+ COUNT(*) as signups
+FROM pizza_runner.runners
+GROUP BY registered_week
+ORDER BY registered_week
+```
 
 #### 1.2 Query steps:
 - Use DATE_TRUNC() to round the registration_date to the nearest week starting on Monday. You can also use DATE_TRUNC() to round to the nearest year, month, or time, noting that it always rounds down to the beginning of the specified period.
+- Use `INTERVAL 'X days' to change the default start day of week
 
 What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
 Is there any relationship between the number of pizzas and how long the order takes to prepare?
